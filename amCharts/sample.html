@@ -1,0 +1,66 @@
+<html>
+<head>
+    <!-- Styles -->
+    <style>
+        #chartdiv {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <!-- HTML -->
+    <div id="chartdiv"></div>
+    
+    <!-- Resources -->
+    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/plugins/wordCloud.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+    
+    <!-- Chart code -->
+    <script>
+        am4core.ready(function() {
+        
+            // Themes begin
+            am4core.useTheme(am4themes_animated);
+            // Themes end
+            
+            const chart = am4core.create("chartdiv", am4plugins_wordCloud.WordCloud);
+            chart.fontFamily = "Courier New";
+            const series = chart.series.push(new am4plugins_wordCloud.WordCloudSeries());
+            series.randomness = 0.1;
+            series.rotationThreshold = 0.5;
+            
+            series.text = "タグ・クラウド (tag cloud、 ワードクラウド 、またはビジュアルデザインの重み付きリスト ）はタグの視覚的記述を指す。テキストデータの斬新な視覚表現であり、通常はWebサイトでキーワードメタデータ（タグ）を描写したり、自由形式のテキストを視覚化するが、通常タグは単一の単語であり、各タグの重要性はフォントサイズまたは色で示される[2]。 この形式は、最も重要な用語をすばやく認識して、その相対的な重要度を判断するのに役立つが Webサイトのナビゲーション支援として使用される場合、用語はタグに関連付けられたアイテムにハイパーリンクされる。";
+            series.maxCount = 100;
+            series.minWordLength = 3;
+            series.excludeWords = ["される", "であり", "この", "その"];
+
+            series.heatRules.push({
+                "target": series.labels.template,
+                "property": "fill",
+                "min": am4core.color("#0000CC"),
+                "max": am4core.color("#CC00CC"),
+                "dataField": "value"
+            });
+            
+            series.labels.template.url = "https://stackoverflow.com/questions/tagged/{word}";
+            series.labels.template.urlTarget = "_blank";
+            series.labels.template.tooltipText = "{word}: {value}";
+            
+            const hoverState = series.labels.template.states.create("hover");
+            hoverState.properties.fill = am4core.color("#FF0000");
+            
+            const subtitle = chart.titles.create();
+            subtitle.text = "(click to open)";
+            
+            const title = chart.titles.create();
+            title.text = "Most Popular Tags @ StackOverflow";
+            title.fontSize = 20;
+            title.fontWeight = "800";
+            
+        }); // end am4core.ready()
+    </script>
+</body>
+</html>
